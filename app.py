@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, flash
 import sqlite3
 import random
-from web_app.markup import sent_tokenize, markup
+from markup import sent_tokenize, markup
 from exercise_predicate_rule import task_rule_gen
 from exercise_predicate_passive import task_pssv_gen
 from flask_login import LoginManager, login_required, UserMixin, current_user, login_user, logout_user
