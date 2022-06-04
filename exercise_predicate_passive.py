@@ -1,10 +1,10 @@
 import pymorphy3
-import enchant
+#import enchant
 import sqlite3
 import traceback
 import sys
 morph = pymorphy3.MorphAnalyzer()
-d = enchant.Dict("ru")
+#d = enchant.Dict("ru")
 
 
 def get_rows():
@@ -58,17 +58,17 @@ def task_pssv_gen(sent_text, sent_markup, sent_id, text_theme=''):
         sent_markup = [_.split(', ', maxsplit=6) for _ in sent_markup]  # token.text, token.pos_, token.dep_,
         # token.head.text, token.idx, token.idx + len(token.text), token.children
         for word in sent_markup:  # [Формирование, NOUN, nsubj, является, 0, 12, [тематики]]
-            if word[0].isalpha and d.check(word[0]):  # исключает иностранные слова и слова с орфографическими ошибками
+            if word[0].isalpha:  # d.check(word[0]) # исключает иностранные слова и слова с орфографическими ошибками
                 if word[2] == "ROOT" and word[1] == 'VERB' and not verb and morph.parse(word[0])[0].tag.voice == 'pssv':
                     # поиск сказуемого
                     verb = word
                     children_v = [_ for _ in sent_markup if _[0] in verb[6].split(', ')]  # список токенов, зависимых
                     # от глагола (I уровень)
                     for ch_v in children_v:
-                        if d.check(ch_v[0]):
-                            if ch_v[2] in ["nsubj", "nsubj:pass"] and ch_v[1] in ['NOUN', 'PRON'] \
-                                    and not subj and morph.parse(ch_v[0])[0].tag.case == 'nomn':  # поиск подлежащего
-                                subj = ch_v
+                        #if d.check(ch_v[0]):
+                        if ch_v[2] in ["nsubj", "nsubj:pass"] and ch_v[1] in ['NOUN', 'PRON'] \
+                                and not subj and morph.parse(ch_v[0])[0].tag.case == 'nomn':  # поиск подлежащего
+                            subj = ch_v
                 if word[2] == "aux:pass":
                     aux.append(word)
         if not subj or not verb:
