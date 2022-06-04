@@ -1,0 +1,92 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Профиль</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            В профиле можно просматривать статистику решенных упражнений.
+        </blockquote>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="row text-center" id="message_div">
+             <div class="col-sm-5 mx-auto bg-warning">
+                 <p>{{ messages[0] }}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+         <div class="p-2">
+             <label for="doughnut-chart" class="col-sm-10 col-form-label">Статистика за все время:</label>
+             <canvas id="doughnut-chart" height="70%"></canvas>
+         </div>
+
+          <div class="p-2">
+            {% if solved_exers == [] %}
+              <p>Здесь будут отображаться все решенные вами упражнения.</p>>
+            {% else %}
+              <ul class="list-group list-group-flush">
+              {% for test in solved_exers %}
+              <li class="list-group-item col-sm-12 list-group-item-action">
+
+              <a class="" data-bs-toggle="collapse" style="text-decoration: none; color: black;"
+                 href="#test_{{ loop.index }}" role="button" aria-expanded="false"
+                 aria-controls="test_{{ loop.index }}">
+
+              <div class="row w-100">
+                  <div class="col-sm-7 text-start">Тест {{ loop.index }}</div>
+                  <div class="col-sm-2">{{ test[0][2].split(' ')[0] }}</div>
+                  <div class="col-sm-2">{{ test[-1] }}%</div>
+                  <div class="col-sm-1 text-end"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg></div>
+
+
+
+              </div></a></li>
+                <table class="table table-borderless collapse" id="test_{{ loop.index }}">
+                <tr><th>Текст упражнения</th><th>Ваш ответ</th><th>Правильный ответ</th></tr>
+                {% for rec in test[:-1] %}
+                    {% if rec[3] == 1 %}
+                    <tr class="bg-success bg-opacity-10"><td>{{ rec[4]|safe }}</td><td>{{ rec[1]|lower }}</td><td>{{ rec[5]|lower }}</td></tr>
+                    {% elif rec[3] == 0 %}
+                    <tr class="bg-danger bg-opacity-10"><td class="m-20">{{ rec[4]|safe }}</td><td>{{ rec[1]|lower }}</td><td>{{ rec[5]|lower }}</td></tr>
+                    {% else %}
+                    <tr class="bg-white bg-opacity-10"><td>{{ rec[4]|safe }}</td><td>{{ rec[1]|lower }}</td><td>{{ rec[5]|lower }}</td></tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+
+
+
+               {% endfor %}
+               </ul>
+
+            {% endif %}
+         </div>
+
+      </div>
+  </div>
+</div>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
+
+<script>
+    new Chart(document.getElementById("doughnut-chart"), {
+    type: 'doughnut',
+    data: {
+      labels: [ ({{ correct / mark_sum * 100 }}).toFixed(2) + "% Правильно решённые упражнения", ({{ incorrect / mark_sum * 100 }}).toFixed(2) + "% Неправильльно решённые упражнения"],
+      datasets: [
+        {
+          backgroundColor: ["#99e699", "#ffb3b3"],
+          data: [{{ correct }}, {{ incorrect }}]
+        }
+      ]
+    },
+    options: {
+      legend: {
+        position:"right",
+      }
+    }
+});
+</script>

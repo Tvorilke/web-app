@@ -1,0 +1,105 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Регистрация</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Заполните поля
+        </blockquote>
+        <form method="POST" action="/sign-up">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="row text-center" id="message_div">
+                 <div class="col-sm-5 mx-auto bg-warning">
+                     <p>{{ messages[0]|safe }}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+             <div class="p-2 row text-center" id="email_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="email" name="email" id="email" required
+                           placeholder="Введите email" maxlength="30" autofocus="">
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="login_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="text" name="login" id="login"
+                           placeholder="Введите login" pattern="[A-Za-z0-9]{1, 50}" required>
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="name_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="text" name="name" id="name"
+                           placeholder="Введите ваше ФИО" pattern="[A-Za-zА-Яа-яЁё]{1, 50}" required>
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="password_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="password" name="password" id="password" maxlength="30"
+                           minlength="8" placeholder="Введите пароль" required>
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="password_repeat_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="password" name="password_repeat" id="password_repeat" maxlength="30"
+                           minlength="8" placeholder="Повторите пароль" required>
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="type_div">
+                 <div class="col-sm-5 m-auto">
+                     <select class="form-select" name="type" id="type" required>
+                      <option selected>Выберите роль</option>
+                      <option value="S">Ученик</option>
+                      <option value="T">Преподаватель</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary m-2 bg-success border-success" type="submit">Зарегистрироваться</button>
+        </form>
+      </div>
+  </div>
+</div>
+
+
+<script>
+    const email = document.getElementById("email");
+    const login = document.getElementById("login");
+    const name = document.getElementById("name");
+    const password = document.getElementById("password");
+    const password_repeat = document.getElementById("password_repeat");
+    const type = document.getElementById("type");
+
+    email.addEventListener("input", (event) => {
+          if (email.validity.typeMismatch || email.validity.valueMissing || email.validity.tooLong)
+          {email.className = "form-control is-invalid";}
+    else {email.className = "form-control is-valid";}
+    });
+
+    login.addEventListener("input", (event) => {
+          if (login.validity.patternMismatch || login.validity.valueMissing) {login.className = "form-control is-invalid";}
+    else {login.className = "form-control is-valid";}
+    });
+
+    name.addEventListener("input", (event) => {
+          if (name.validity.patternMismatch || name.validity.valueMissing) {name.className = "form-control is-invalid";}
+    else {name.className = "form-control is-valid";}
+    });
+
+    password.addEventListener("input", (event) => {
+          if (password.validity.typeMismatch || password.validity.valueMissing || password.validity.tooLong)
+          {password.className = "form-control is-invalid";}
+    else {password.className = "form-control is-valid";}
+    });
+
+    password_repeat.addEventListener("input", (event) => {
+          if (password_repeat.validity.typeMismatch || password_repeat.validity.valueMissing || password_repeat.value != password.value || password_repeat.validity.tooLong)
+          {password_repeat.className = "form-control is-invalid";}
+    else {password_repeat.className = "form-control is-valid";}
+    });
+</script>

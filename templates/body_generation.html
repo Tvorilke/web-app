@@ -1,0 +1,104 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Генерация задания</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Выберите критерии генерации задания. Пункты обязательные к заполнению отмечены звездочкой.
+        </blockquote>
+
+            <form action="/task" method="post">
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <div class="row text-center" id="message_div">
+                         <div class="col-sm-10 mx-auto bg-warning">
+                             <p>{{ messages[0] }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="p-2">
+                    <label for="text-source">Источник предложений для упражнений:<text style="color:red;">*</text></label>
+                    <div id="text-source" class="form-check-inline">
+                      <input class="form-radio-input ms-5 me-2" type="radio" name="text-source" id="text-source-corpus"
+                             value="corpus" onchange="hide()" checked>
+                      <label class="form-check-label " for="text-source-corpus">Корпус веб-приложения</label>
+
+                      <input class="form-radio-input ms-5 me-2" type="radio" name="text-source" id="text-source-file"
+                             value="file" onchange="show()">
+                      <label class="form-check-label" for="text-source-file">Свой текст</label>
+                    </div>
+                </div>
+
+                <div class="w-65 d-none" id="add-text">
+                    <div class="p-2 row">
+                      <label for="text-enter" class="col-sm-2 col-form-label">Введите текст: </label>
+                         <div class="col-sm-10">
+                            <textarea class="form-control" id="text-enter" rows="3"
+                                      placeholder="Введите текст на русском языке."
+                                      name="text-file"></textarea>
+                         </div>
+                    </div>
+                    <div class="p-2 row">
+                      <label for="file-enter" class="col-sm-2 col-form-label">Или загрузите файл: </label>
+                        <div class="col-sm-10">
+                            <input class="form-control col-sm-10" type="file" id="file-enter" name="text-file" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-2 row">
+                    <label for="amount" class="col-sm-4 col-form-label">Введите количество упражнений:<text style="color:red;">*</text></label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="amount" pattern="\d{1,2}"
+                             name="amount" value="5" required>
+                    </div>
+                </div>
+
+                <div class="p-2">
+                <label for="hint">Отображать подсказки:<text style="color:red;">*</text></label>
+                <div id="hint" class="form-check-inline">
+                  <input class="form-radio-input ms-5 me-2" type="radio" name="hint" id="hint-on" value="on">
+                  <label class="form-check-label " for="hint-on">Да</label>
+
+                  <input class="form-radio-input ms-5 me-2" type="radio" name="hint" id="hint-off"  value="off" checked>
+                  <label class="form-check-label" for="hint-off">Нет</label>
+                </div>
+                </div>
+
+                  <div class="row justify-content-center align-items-center p-2 mb-2">
+                    <div class="col text-center">
+                        <button class="btn btn-primary m-2 bg-success border-success" name="task_type" type="submit" value="{{ task_type }}">Сгенерировать</button>
+                    </div>
+                  </div>
+
+            </form>
+
+      </div>
+  </div>
+</div>
+
+
+<script>
+
+const addtext = document.getElementById("add-text")
+const amount = document.getElementById("amount");
+const textenter = document.getElementById("text-enter");
+const fileenter = document.getElementById("text-file");
+
+function hide() {
+  addtext.className = "w-65 d-none";
+}
+function show() {
+  addtext.className = "w-65 d-block";
+}
+
+amount.addEventListener("input", (event) => {
+if (amount.validity.valueMissing || amount.validity.patternMismatch)
+{amount.className = "form-control is-invalid";}
+else {amount.className = "form-control is-valid";}
+});
+
+
+</script>

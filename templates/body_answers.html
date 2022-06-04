@@ -1,0 +1,43 @@
+<div class="container-fluid p-5">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Результат</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Пояснение.
+        </blockquote>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Правильно выполнено: {{ percent }}%
+        </blockquote>
+
+        {% for row in records %}
+          {% if marks[loop.index0] == 1 %}
+            {% set class = "p-1 m-3 row bg-success bg-opacity-10" %}
+          {% elif marks[loop.index0] == 0 %}
+            {% set class = "p-1 m-3 row bg-danger bg-opacity-10" %}
+          {% elif marks[loop.index0] == -1 %}
+            {% set class = "p-1 m-3 row" %}
+          {% endif %}
+          <div class="{{ class }}">
+              <label for="task" class="col-sm-1 col-form-label"><b>{{ loop.index }}.</b></label>
+              <div class="col-sm-11" id="task"><p>{{ row[2]|safe }}</p></div>
+              <div class="" id="words-to-mod"><p>{{ row[3] }}</p></div>
+              {% if row[8] == 1 %}
+                <div class="" id="answer"><p>Ответ: {{ row[4] }}</p></div>
+              {% else %}
+                <div class="" id="user_answer"><p>Ваш ответ: {{ user_answers[loop.index0] }}</p></div>
+                <div class="" id="correct_answer"><p>Правильный ответ: {{ row[4] }}</p></div>
+                <div id="hint"><p>Подсказка: {{ row[5] }}</p></div>
+              {% endif %}
+
+          </div>
+        {% endfor %}
+        <div class="row justify-content-center align-items-center p-5">
+            <div class="col text-center">
+                <a class="btn btn-primary bg-success border-success m-2" href="/task" role="button">Решить еще раз</a>
+                <a class="btn btn-primary bg-success border-success m-2" href="index" role="button">На главную</a>
+            </div>
+        </div>
+
+      </div>
+  </div>
+</div>

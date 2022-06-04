@@ -1,0 +1,23 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Профиль</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Это ваш профиль. На этой странице появится статистика решенных вами упражнений.
+        </blockquote>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="row text-center" id="message_div">
+             <div class="col-sm-5 mx-auto bg-warning">
+                 <p>{{ messages[0] }}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+
+
+      </div>
+  </div>
+</div>

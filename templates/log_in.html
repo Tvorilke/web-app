@@ -1,0 +1,56 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center">
+        <h1 class="display-6 m-4">Войдите в аккаунт.</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            Введите email и пароль.<br>Нет аккаунта? <a href="/sign-up">Зарегистрируйтесь.</a>
+        </blockquote>
+        <form method="POST" action="/log-in">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="row text-center" id="message_div">
+                 <div class="col-sm-5 mx-auto bg-warning">
+                     <p>{{ messages[0] }}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+             <div class="p-2 row text-center" id="email_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="email" name="email" id="email"
+                           placeholder="Введите email" required autofocus="">
+                </div>
+            </div>
+
+            <div class="p-2 row text-center" id="password_div">
+                 <div class="col-sm-5 m-auto">
+                    <input class="form-control" type="password" name="password" id="password"
+                           required placeholder="Введите пароль">
+                </div>
+            </div>
+
+
+
+            <button class="btn btn-primary m-2 bg-success border-success" type="submit">Войти</button>
+        </form>
+      </div>
+  </div>
+</div>
+
+<script>
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+
+    email.addEventListener("input", (event) => {
+          if (email.validity.typeMismatch || email.validity.valueMissing || email.validity.tooLong)
+          {email.className = "form-control is-invalid";}
+    else {email.className = "form-control is-valid";}
+    });
+
+    password.addEventListener("input", (event) => {
+          if (password.validity.typeMismatch || password.validity.valueMissing || password.validity.tooLong)
+          {password.className = "form-control is-invalid";}
+    else {password.className = "form-control is-valid";}
+    });
+</script>

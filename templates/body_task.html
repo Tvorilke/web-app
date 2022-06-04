@@ -1,0 +1,121 @@
+<div class="container-fluid p-5 bg-success bg-opacity-25">
+  <div class="row align-items-center">
+      <div class="col order-1 w-80 h-100 bg-white text-center" id="task_body">
+        <h1 class="display-6 m-4">{{ task_title }}</h1>
+        <blockquote class="blockquote text-center fs-6 fw-lighter">
+            {{ task_discr }}
+        </blockquote>
+
+        <form action="/answers" method="post">
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="row text-center" id="message_div">
+                 <div class="col-sm-10 mx-auto bg-warning">
+                     <p>{{ messages[0]|safe }}</p>
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+                {% for task in exercise %}
+                    <div class="p-2 row">
+
+                    <label for="task" class="col-sm-1 col-form-label"><b>{{ loop.index }}.</b></label>
+                    <div class="col-sm-11 mt-1">
+                    <div class="text-start" id="task"><p>{{ task[2]|safe }}</p></div>
+                    <div class="" id="words-to-mod"><p>{{ task[3] }}</p></div>
+
+                    {% if hint == 'on' %}
+                        <div id="hint"><p>{{ task[5] }}</p></div>
+                    {% endif %}
+
+                    <div class="p-2 row">
+                          <input type="text" class="form-control" id="user_answer_{{ loop.index }}" pattern="[А-Яа-я ёЁ]+"
+                                 name="user_answer_{{ loop.index }}" value=""  placeholder="Ответ">
+                    </div>
+
+                    <div class="p-2 form-check text-start">
+                        <input class="form-check-input ms-0 me-2" type="checkbox" value="1" name ="error_{{ loop.index }}" id="error_{{ loop.index }}" onchange="show_{{ loop.index }}()">
+                        <label class="form-check-label" for="error_{{ loop.index }}">
+                            Отметить упражнение как некорректное
+                        </label>
+                    </div>
+
+                    <div class="p-2 row text-center d-none" id="comment_div_{{ loop.index }}">
+                        <input type="text" class="form-control" id="comment_{{ loop.index }}"
+                               name="comment_{{ loop.index }}" value="" placeholder="Комментарий">
+                    </div>
+                    </div>
+
+                <script>
+                function show_{{ loop.index }}() {
+                    if (document.getElementById("comment_div_{{ loop.index }}").className == "p-2 row text-center d-none")
+                        {document.getElementById("comment_div_{{ loop.index }}").className = "p-2 row text-center d-block";}
+                    else {document.getElementById("comment_div_{{ loop.index }}").className = "p-2 row text-center d-none";}
+                }
+
+                const user_answer_{{ loop.index }} = document.getElementById("user_answer_{{ loop.index }}");
+
+                user_answer_{{ loop.index }}.addEventListener("input", (event) => {
+                if (user_answer_{{ loop.index }}.validity.patternMismatch) {user_answer_{{ loop.index }}.className = "form-control is-invalid";}
+                else {user_answer_{{ loop.index }}.className = "form-control is-valid";}
+                });
+                </script>
+                </div>
+                {% endfor %}
+
+
+            <div class="row justify-content-center align-items-center p-5">
+                <div class="col text-center">
+                    <button class="btn btn-primary m-2 bg-success border-success" type="submit">Проверить</button>
+                    <a class="btn btn-primary bg-success border-success m-2" role="button" onclick="create_task_file()">Скачать файл с заданием</a>
+                </div>
+            </div>
+        </form>
+
+      </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js">
+    import { jsPDF } from "jspdf";
+</script>
+<script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js">
+    import html2canvas from 'html2canvas';
+</script>
+
+
+<script>
+
+    function create_task_file() {
+        const filename = 'task.pdf';
+        const thisData = this;
+        this.printElement = document.getElementById('task_body');
+        html2canvas(this.printElement).then(canvas => {
+        this.pdfData = new jsPDF ('p', 'mm', 'a4');
+        var imgData = canvas.toDataURL('image/png');
+        var imgWidth = 210;
+        var pageHeight = 295;
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var heightLeft = imgHeight;
+
+        this.pdfData.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft >= 0) {
+          var position = heightLeft - imgHeight + 5;
+          this.pdfData.addPage();
+          this.pdfData.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        this.pdfData.save(filename);
+        // window.open('task_file');
+
+    });}
+
+
+</script>
+
+
