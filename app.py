@@ -232,7 +232,7 @@ def add_to_db(records, marks, user_answers, errors, comments):
 
 
 def db_connect():
-    sqlite_connection = sqlite3.connect('/Users/anastasiiaprisiazniuk/PycharmProjects/ДИПЛОМ/DB/web_app.db')
+    sqlite_connection = sqlite3.connect('web_app.db')
     return sqlite_connection
 
 
