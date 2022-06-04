@@ -1,10 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, flash
+import flask.Flask as Flask
+import flask.render_template as render_template
+import flask.request as request
+import flask.redirect as redirect
+import flask.url_for as url_for
+import flask.make_response as make_response
+import flask.flash as flash
 import sqlite3
 import random
 from markup import sent_tokenize, markup
 from exercise_predicate_rule import task_rule_gen
 from exercise_predicate_passive import task_pssv_gen
-from flask_login import LoginManager, login_required, UserMixin, current_user, login_user, logout_user
+import flask_login.LoginManager as LoginManager
+import flask_login.login_required as login_required
+import flask_login.UserMixin as UserMixin
+import flask_login.current_user as current_user
+import flask_login.login_user as login_user
+import flask_login.logout_user as logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import itertools
 import datetime
@@ -79,12 +90,12 @@ def sign_up_form():
         password = request.form.get('password')
         password = generate_password_hash(password, method='sha256')
         email = request.form.get('email')
-        type = request.form.get('type')
+        u_type = request.form.get('type')
         if cursor.execute("SELECT * from users WHERE email = (?);", [email]).fetchall():
             flash('Такой email уже зарегистрирован. <a href="/log-in">Авторизируйтесь.</a>')
             return redirect(url_for('sign_up'))
         cursor.execute('INSERT INTO users (name, login, password, email, type) VALUES (?, ?, ?, ?, ?)',
-                       (name, login, password, email, type))
+                       (name, login, password, email, u_type))
         sqlite_connection.commit()
         flash('Вы успешно зарегистрированы.')
         user_id = cursor.execute("SELECT id from users WHERE email = (?);", [email]).fetchone()[0]
@@ -160,7 +171,7 @@ def exercise():
         exer_amount = request.form.get('amount')
         hint = request.form.get('hint')
         task_type = request.cookies.get('task_type')
-        data = exer_generation(text_source, text_file, exer_amount, task_type)
+        data = exer_generation(text_file, exer_amount, task_type)
         if not data:
             flash("Не удалось сгенерировать задания из введенного текста. Попробуйте ввести другой!")
             return redirect(url_for('generation'))
@@ -195,8 +206,8 @@ def exercise():
         text_source = request.cookies.get('text_source')
         task_type = request.cookies.get('task_type')
         if text_source == 'corpus':
-            for id in exer_id:
-                records.append(cursor.execute("SELECT * from exercises where id = {}".format(int(id))).fetchall()[0])
+            for _ in exer_id:
+                records.append(cursor.execute("SELECT * from exercises where id = {}".format(int(_))).fetchall()[0])
         elif text_source == 'file':
             tasks = request.cookies.get('tasks').split('; ')
             words_to_mod = request.cookies.get('words_to_mod').split('; ')
@@ -236,9 +247,9 @@ def db_connect():
     return sqlite_connection
 
 
-def exer_generation(text_source, text_file, exer_amount, task_type):
+def exer_generation(text_file, exer_amount, task_type):
     tasks_functions = {'rule': task_rule_gen, 'pssv': task_pssv_gen}
-    exercise = []
+    exercises = []
     data = []
     sqlite_connection = db_connect()
     cursor = sqlite_connection.cursor()
@@ -255,9 +266,9 @@ def exer_generation(text_source, text_file, exer_amount, task_type):
     if text_file:
         sentences = sent_tokenize(text_file)
         for sent in sentences:
-            exercise.append((sent, markup(sent), sentences.index(sent)))
-        if len(exercise) >= int(exer_amount):
-            for task in random.sample(exercise, int(exer_amount)):
+            exercises.append((sent, markup(sent), sentences.index(sent)))
+        if len(exercises) >= int(exer_amount):
+            for task in random.sample(exercises, int(exer_amount)):
                 t = tasks_functions[task_type](task[0], task[1], task[2])
                 if t:
                     t = list(t)
@@ -265,7 +276,7 @@ def exer_generation(text_source, text_file, exer_amount, task_type):
                     t = tuple(t)
                     data.append(t)
         else:
-            for task in exercise:
+            for task in exercises:
                 t = tasks_functions[task_type](task[0], task[1], task[2])
                 if t:
                     t = list(t)
@@ -294,9 +305,9 @@ def check_exer():
         text_source = request.cookies.get('text_source')
         if text_source == "corpus":
             exer_id = request.cookies.get('exer_id').split(' ')
-            for id in exer_id:
-                records.append(cursor.execute("SELECT * from exercises where id = (?)", [int(id)]).fetchall()[0])
-                answers.append(cursor.execute("SELECT * from exercises where id = (?)", [int(id)]).fetchall()[0][4])
+            for _ in exer_id:
+                records.append(cursor.execute("SELECT * from exercises where id = (?)", [int(_)]).fetchall()[0])
+                answers.append(cursor.execute("SELECT * from exercises where id = (?)", [int(_)]).fetchall()[0][4])
         elif text_source == "file":
             tasks = request.cookies.get('tasks').split('; ')
             words_to_mod = request.cookies.get('words_to_mod').split('; ')
@@ -353,7 +364,7 @@ def profile():
     solved_exers.sort(key=itemgetter(6))
     solved_exers = groupby(solved_exers, itemgetter(6))
     tests = [[item for item in data] for (key, data) in solved_exers]
-    tests.sort(key = lambda x: x[0][2])
+    tests.sort(key=lambda x: x[0][2])
     for test in tests:
         total_mark = round((sum([item[3] for item in test if item[3] != -1]) / len(test) * 100), 2)
         test.append(total_mark)

@@ -1,15 +1,15 @@
 import pymorphy3
-import enchant
+# import enchant
 import sqlite3
 import traceback
 import sys
 morph = pymorphy3.MorphAnalyzer()
-d = enchant.Dict("ru")
+# d = enchant.Dict("ru")
 
 
 def get_rows():
     try:
-        sqlite_connection = sqlite3.connect('../DB/web_app.db')
+        sqlite_connection = sqlite3.connect('./web_app/web_app.db')
         cursor = sqlite_connection.cursor()
         sqlite_select_query = """SELECT * from sentences_markup"""
         cursor.execute(sqlite_select_query)

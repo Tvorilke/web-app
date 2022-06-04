@@ -1,4 +1,4 @@
-from rusenttokenize import ru_sent_tokenize
+import rusenttokenize.ru_sent_tokenize as rst
 import os
 import spacy
 import sqlite3
@@ -9,7 +9,7 @@ nlp = spacy.load('ru_core_news_sm')
 
 def main():
     try:
-        sqlite_connection = sqlite3.connect('../DB/web_app.db')
+        sqlite_connection = sqlite3.connect('./web_app/web_app.db')
         cursor = sqlite_connection.cursor()
         get_files(cursor)
         sqlite_connection.commit()
@@ -37,7 +37,7 @@ def get_files(c):
 
 
 def sent_tokenize(text):
-    sentences = ru_sent_tokenize(text)
+    sentences = rst(text)
     sentences = [s for s in sentences if s != '']
     '''merge = lambda s: reduce(operator.iadd, s, [])
     sentences = merge(sentences)'''
