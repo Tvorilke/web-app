@@ -12,7 +12,7 @@ nlp = spacy.load('ru_core_news_sm')
 
 def get_rows():
     try:
-        sqlite_connection = sqlite3.connect('./web_app/web_app.db')
+        sqlite_connection = sqlite3.connect('web_app.db')
         cursor = sqlite_connection.cursor()
         sqlite_select_query = """SELECT * from sentences_markup"""
         cursor.execute(sqlite_select_query)
@@ -60,8 +60,7 @@ def task_rule_gen(sent_text, sent_markup, sent_id, text_theme=''):
         sent_markup = sent_markup.split('); (')
         sent_markup = [_.split(', ', maxsplit=6) for _ in sent_markup]
         for word in sent_markup:
-            if word[
-                0].isalpha:  # and d.check(word[0])  # исключает иностранные слова и слова с орфографическими ошибками
+            if word[0].isalpha:  # and d.check(word[0])  # исключает иностранные слова и слова с орфографическими ошибками
                 if word[2] == "ROOT" and word[1] == 'VERB' and not verb:  # поиск сказуемого
                     verb = word
                     children_v = [_ for _ in sent_markup if _[0] in verb[6].split(', ')]  # список токенов, зависимых

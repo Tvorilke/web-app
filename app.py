@@ -1,21 +1,10 @@
-import flask.Flask as Flask
-import flask.render_template as render_template
-import flask.request as request
-import flask.redirect as redirect
-import flask.url_for as url_for
-import flask.make_response as make_response
-import flask.flash as flash
+from flask import Flask, render_template, request, redirect, url_for, make_response, flash, send_file
 import sqlite3
 import random
 from markup import sent_tokenize, markup
 from exercise_predicate_rule import task_rule_gen
 from exercise_predicate_passive import task_pssv_gen
-import flask_login.LoginManager as LoginManager
-import flask_login.login_required as login_required
-import flask_login.UserMixin as UserMixin
-import flask_login.current_user as current_user
-import flask_login.login_user as login_user
-import flask_login.logout_user as logout_user
+from flask_login import LoginManager, login_required, UserMixin, current_user, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import itertools
 import datetime
@@ -144,9 +133,16 @@ def help_page():
 def generation():
     if request.method == 'POST':
         task_type = request.form.get('task_type')
+        sqlite_connection = db_connect()
+        cursor = sqlite_connection.cursor()
+        #subjects = cursor.execute("SELECT DISTINCT text_theme FROM exercises").fetchall()
+        subjects = {"('Economy',)": 'Экономика и право', "('IT',)": 'Информационные технологии',
+                    "('Law',)": 'Юридическая наука и практика'}
+        sqlite_connection.close()
         reponse = make_response(render_template('index.html',
                                                 auth=current_user.is_authenticated,
                                                 task_type=task_type,
+                                                subjects=subjects.items(),
                                                 page_template='body_generation.html'))
         reponse.set_cookie('task_type', task_type)
         return reponse
@@ -171,7 +167,8 @@ def exercise():
         exer_amount = request.form.get('amount')
         hint = request.form.get('hint')
         task_type = request.cookies.get('task_type')
-        data = exer_generation(text_file, exer_amount, task_type)
+        subject = (request.form.get('subject')).split("'")[1]
+        data = exer_generation(text_file, exer_amount, task_type, subject)
         if not data:
             flash("Не удалось сгенерировать задания из введенного текста. Попробуйте ввести другой!")
             return redirect(url_for('generation'))
@@ -247,7 +244,7 @@ def db_connect():
     return sqlite_connection
 
 
-def exer_generation(text_file, exer_amount, task_type):
+def exer_generation(text_file, exer_amount, task_type, subject):
     tasks_functions = {'rule': task_rule_gen, 'pssv': task_pssv_gen}
     exercises = []
     data = []
@@ -260,7 +257,10 @@ def exer_generation(text_file, exer_amount, task_type):
     else:
         used_exers = []
     if not text_file:
-        records = cursor.execute("SELECT * FROM exercises WHERE type = (?);", [task_type]).fetchall()
+        if subject == 'all':
+            records = cursor.execute("SELECT * FROM exercises WHERE type = (?);", [task_type]).fetchall()
+        else:
+            records = cursor.execute("SELECT * FROM exercises WHERE type = (?) and text_theme = (?);", [task_type, subject]).fetchall()
         records = [rec for rec in records if rec[0] not in used_exers]
         data = random.sample(records, int(exer_amount))
     if text_file:

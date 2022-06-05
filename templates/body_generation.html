@@ -31,6 +31,16 @@
                     </div>
                 </div>
 
+                <div class="p-2 row">
+                    <div class="col-sm-4"><label for="subject" class="col-form-label">Тематика текстов:</label></div>
+                    <div class="col-sm-8"><select class="form-select" aria-label="Default select example" id="subject" name="subject">
+                      <option value="all" selected>Любая</option>
+                        {% for s in subjects %}
+                            <option value="{{ s[0] }}">{{ s[1] }}</option>
+                        {% endfor %}
+                    </select></div>
+                </div>
+
                 <div class="w-65 d-none" id="add-text">
                     <div class="p-2 row">
                       <label for="text-enter" class="col-sm-2 col-form-label">Введите текст: </label>
@@ -89,9 +99,11 @@ const fileenter = document.getElementById("text-file");
 
 function hide() {
   addtext.className = "w-65 d-none";
+  document.getElementById("subject").disabled = false;
 }
 function show() {
   addtext.className = "w-65 d-block";
+  document.getElementById("subject").disabled = true;
 }
 
 amount.addEventListener("input", (event) => {

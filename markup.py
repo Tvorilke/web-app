@@ -1,4 +1,4 @@
-import rusenttokenize.ru_sent_tokenize as rst
+import rusenttokenize
 import os
 import spacy
 import sqlite3
@@ -37,7 +37,7 @@ def get_files(c):
 
 
 def sent_tokenize(text):
-    sentences = rst(text)
+    sentences = rusenttokenize.ru_sent_tokenize(text)
     sentences = [s for s in sentences if s != '']
     '''merge = lambda s: reduce(operator.iadd, s, [])
     sentences = merge(sentences)'''
