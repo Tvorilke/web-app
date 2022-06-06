@@ -11,11 +11,11 @@
 
         {% for row in records %}
           {% if marks[loop.index0] == 1 %}
-            {% set class = "p-1 m-3 row bg-success bg-opacity-10" %}
+            {% set class = "pt-3 m-3 row bg-success bg-opacity-10" %}
           {% elif marks[loop.index0] == 0 %}
-            {% set class = "p-1 m-3 row bg-danger bg-opacity-10" %}
+            {% set class = "pt-3 m-3 row bg-danger bg-opacity-10" %}
           {% elif marks[loop.index0] == -1 %}
-            {% set class = "p-1 m-3 row" %}
+            {% set class = "pt-3 m-3 row" %}
           {% endif %}
           <div class="{{ class }}">
               <label for="task" class="col-sm-1 col-form-label"><b>{{ loop.index }}.</b></label>

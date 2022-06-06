@@ -1,9 +1,9 @@
 <div class="container-fluid p-5 bg-success bg-opacity-25">
   <div class="row align-items-center">
-      <div class="col order-1 w-80 h-100 bg-white text-center" id="task_body">
+      <div class="col order-1 w-80 h-100 bg-white text-center p-3" id="task_body">
         <h1 class="display-6 m-4">{{ task_title }}</h1>
-        <blockquote class="blockquote text-center fs-6 fw-lighter">
-            {{ task_discr }}
+        <blockquote class="blockquote text-center fs-6 fw-lighter ps-5 pe-5 ms-5 me-5">
+            {{ task_discr|safe }}
         </blockquote>
 
         <form action="/answers" method="post">
@@ -19,7 +19,7 @@
             {% endwith %}
 
                 {% for task in exercise %}
-                    <div class="p-2 row">
+                    <div class="p-2 row ms-2 me-2">
 
                     <label for="task" class="col-sm-1 col-form-label"><b>{{ loop.index }}.</b></label>
                     <div class="col-sm-11 mt-1">
