@@ -3,7 +3,8 @@
       <div class="col order-1 w-80 h-100 bg-white text-center">
         <h1 class="display-6 m-4">Регистрация</h1>
         <blockquote class="blockquote text-center fs-6 fw-lighter">
-            Заполните поля
+            Для регистрации необходимо ввеестти данные в форму ниже.
+            <br>Уже есть аккаунт? <a href="log-in">Войдите.</a>
         </blockquote>
         <form method="POST" action="/sign-up">
             {% with messages = get_flashed_messages() %}
@@ -52,7 +53,7 @@
 
             <div class="p-2 row text-center" id="type_div">
                  <div class="col-sm-5 m-auto">
-                     <select class="form-select" name="type" id="type" required>
+                     <select class="form-select" name="type" id="type" required disabled>
                       <option selected>Выберите роль</option>
                       <option value="S">Ученик</option>
                       <option value="T">Преподаватель</option>

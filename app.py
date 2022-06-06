@@ -383,7 +383,7 @@ def profile():
     correct = user_marks.count(1)
     incorrect = user_marks.count(0)
     mark_sum = correct + incorrect
-    if not solved_exers:
+    if not user_marks:
         return render_template('index.html',
                                auth=current_user.is_authenticated,
                                user=current_user,
